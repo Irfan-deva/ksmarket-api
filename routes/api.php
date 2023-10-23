@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return (['name' => 'Irfan deva']);
+    return (['msg' => 'welcome to super mart']);
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
