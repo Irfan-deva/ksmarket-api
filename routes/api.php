@@ -16,10 +16,12 @@ use Illuminate\Support\Facades\Route;
 */
 //PUBLIC ROUTES
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 Route::get('/products', [ProductController::class, 'index']);
 
 
 
 //PROTECTED ROUTES
 Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::post('/logout', [AuthController::class, 'logout']);
 });
