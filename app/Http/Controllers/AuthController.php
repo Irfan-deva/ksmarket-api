@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
+    //REGISTER
     public function register(Request $request)
     {
         $fields = $request->validate([
@@ -20,15 +21,14 @@ class AuthController extends Controller
             'email' => $fields['email'],
             'password' => bcrypt($fields['password'])
         ]);
-        // $token = $user->createToken('API_TOKEN')->plainTextToken;
 
         $response = [
             'user' => $user,
-            // 'API_TOKEN' => $token
         ];
         return response($response, 201);
     }
 
+    //LOGIN
     public function login(Request $request)
     {
         $fields = $request->validate([
@@ -52,7 +52,8 @@ class AuthController extends Controller
         ];
         return response($response, 201);
     }
-    //logout
+
+    //LOGOUT
     public function logout(Request $request)
     {
         auth()->user()->tokens()->delete();
