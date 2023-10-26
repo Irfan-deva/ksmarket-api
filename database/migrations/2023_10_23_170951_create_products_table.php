@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('product_description');
             $table->float('product_price');
             $table->string('thumbnail');
-            $table->float('rating');
+            $table->float('rating')->default(0);
             $table->timestamps();
         });
     }
