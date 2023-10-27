@@ -2,37 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Products;
+use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
     public function index()
     {
-        return response()->json(Products::all());
+        #return response()->json(Product::with('category')->get());
+        $products = DB::table('products')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->select('products.*', 'categories.category_name')->get();
+        return response([
+            'data' => $products
+        ]);
     }
+
+
     public function store(Request $request)
     {
         $fields = $request->validate([
-            'thumbnail' => 'required|image|mimes:png,jpg',
+            'product_thumbnail' => 'required|image|mimes:png,jpg',
             'product_name' => 'required|string',
             'product_description' => 'required|string',
             'product_price' => 'required|string',
-            'product_category' => 'required|string',
+            'category_id' => 'required|string',
         ]);
 
         $file = $fields['thumbnail'];
         $file_name = $file->getClientOriginalName();
-        $file->move('uploads', $file_name);
+        $file->move('media/images/products', $file_name);
         #$file_name = $file->store('/uploads/thumbnails');
         #$thumbnail = str_replace("public/uploads/thumbnails/", '', $file_name);
 
-        $product = new Products();
+        $product = new Product();
         $product->thumbnail = $file_name;
         $product->product_name = $fields['product_name'];
         $product->product_description = $fields['product_description'];
         $product->product_price = $fields['product_price'];
+        $product->category_id = $fields['category_id'];
         $product->save();
         return response([
             'msg' => $product
