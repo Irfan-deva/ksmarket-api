@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Products;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -22,17 +23,19 @@ class ProductController extends Controller
         ]);
 
         $file = $fields['thumbnail'];
-        $file_name = $file->store('/public/uploads/thumbnails');
-        $thumbnail = str_replace("public/uploads/thumbnails/", '', $file_name);
+        $file_name = $file->getClientOriginalName();
+        $file->move('uploads', $file_name);
+        #$file_name = $file->store('/uploads/thumbnails');
+        #$thumbnail = str_replace("public/uploads/thumbnails/", '', $file_name);
 
         $product = new Products();
-        $product->thumbnail = $thumbnail;
+        $product->thumbnail = $file_name;
         $product->product_name = $fields['product_name'];
         $product->product_description = $fields['product_description'];
         $product->product_price = $fields['product_price'];
         $product->save();
         return response([
-            'msg' => 'uploaded'
+            'msg' => $product
         ]);
     }
 }
